@@ -32,6 +32,7 @@ type HttpCheck struct {
 	TeamIds                  []int             `json:"teamids,omitempty"`
 	VerifyCertificate        *bool             `json:"verify_certificate,omitempty"`
 	SSLDownDaysBefore        *int              `json:"ssl_down_days_before,omitempty"`
+	CustomMessage            string            `json:"custom_message,omitempty"`
 }
 
 // PingCheck represents a Pingdom ping check.
@@ -49,6 +50,7 @@ type PingCheck struct {
 	ProbeFilters             string `json:"probe_filters,omitempty"`
 	UserIds                  []int  `json:"userids,omitempty"`
 	TeamIds                  []int  `json:"teamids,omitempty"`
+	CustomMessage            string `json:"custom_message,omitempty"`
 }
 
 // TCPCheck represents a Pingdom TCP check.
@@ -68,6 +70,7 @@ type TCPCheck struct {
 	Port                     int    `json:"port"`
 	StringToSend             string `json:"stringtosend,omitempty"`
 	StringToExpect           string `json:"stringtoexpect,omitempty"`
+	CustomMessage            string `json:"custom_message,omitempty"`
 }
 
 // DNSCheck represents a Pingdom DNS check.
@@ -86,6 +89,7 @@ type DNSCheck struct {
 	ProbeFilters             string `json:"probe_filters,omitempty"`
 	UserIds                  []int  `json:"userids,omitempty"`
 	TeamIds                  []int  `json:"teamids,omitempty"`
+	CustomMessage            string `json:"custom_message,omitempty"`
 }
 
 // SummaryPerformanceRequest is the API request to Pingdom for a SummaryPerformance.
@@ -160,6 +164,10 @@ func (ck *HttpCheck) PutParams() map[string]string {
 		m["auth"] = fmt.Sprintf("%s:%s", ck.Username, ck.Password)
 	}
 
+	if ck.CustomMessage != "" {
+		m["custom_message"] = ck.CustomMessage
+	}
+
 	// Convert headers
 	var headers []string
 	for k := range ck.RequestHeaders {
@@ -230,6 +238,10 @@ func (ck *PingCheck) PutParams() map[string]string {
 		m["responsetime_threshold"] = strconv.Itoa(ck.ResponseTimeThreshold)
 	}
 
+	if ck.CustomMessage != "" {
+		m["custom_message"] = ck.CustomMessage
+	}
+
 	return m
 }
 
@@ -291,6 +303,10 @@ func (ck *TCPCheck) PutParams() map[string]string {
 		m["stringtoexpect"] = ck.StringToExpect
 	}
 
+	if ck.CustomMessage != "" {
+		m["custom_message"] = ck.CustomMessage
+	}
+
 	return m
 }
 
@@ -347,6 +363,10 @@ func (ck *DNSCheck) PutParams() map[string]string {
 
 	if ck.SendNotificationWhenDown != 0 {
 		m["sendnotificationwhendown"] = strconv.Itoa(ck.SendNotificationWhenDown)
+	}
+
+	if ck.CustomMessage != "" {
+		m["custom_message"] = ck.CustomMessage
 	}
 
 	return m

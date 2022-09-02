@@ -171,6 +171,29 @@ func TestHttpCheckValid(t *testing.T) {
 	assert.Error(t, badContainsCheck.Valid())
 }
 
+func TestHttpCheckCustomMessage(t *testing.T) {
+	check := HttpCheck{
+		Name:          "fake check",
+		Hostname:      "example.com",
+		Url:           "/foo",
+		CustomMessage: "message",
+	}
+	want := map[string]string{
+		"name":             "fake check",
+		"host":             "example.com",
+		"paused":           "false",
+		"notifyagainevery": "0",
+		"notifywhenbackup": "false",
+		"encryption":       "false",
+		"type":             "http",
+		"url":              "/foo",
+		"custom_message":   "message",
+	}
+
+	params := check.PostParams()
+	assert.Equal(t, want, params)
+}
+
 func TestPingCheckPostParams(t *testing.T) {
 	check := PingCheck{
 		Name:                  "fake check",
@@ -231,6 +254,29 @@ func TestPingCheckValid(t *testing.T) {
 	assert.Error(t, badCheck.Valid())
 }
 
+func TestPingCheckCustomMessage(t *testing.T) {
+	check := PingCheck{
+		Name:          "fake check",
+		Hostname:      "example.com",
+		CustomMessage: "message",
+	}
+	want := map[string]string{
+		"name":             "fake check",
+		"host":             "example.com",
+		"paused":           "false",
+		"notifyagainevery": "0",
+		"notifywhenbackup": "false",
+		"probe_filters":    "",
+		"integrationids":   "",
+		"teamids":          "",
+		"userids":          "",
+		"custom_message":   "message",
+	}
+
+	params := check.PutParams()
+	assert.Equal(t, want, params)
+}
+
 func TestTCPCheckPostParams(t *testing.T) {
 	check := TCPCheck{
 		Name:           "fake check",
@@ -270,6 +316,28 @@ func TestTCPCheckValid(t *testing.T) {
 
 	badPortCheck := TCPCheck{Name: "fake check", Hostname: "example.com", Port: 66666}
 	assert.Error(t, badPortCheck.Valid())
+}
+
+func TestTCPCheckCustomMessage(t *testing.T) {
+	check := TCPCheck{
+		Name:          "fake check",
+		Hostname:      "example.com",
+		Port:          8080,
+		CustomMessage: "message",
+	}
+	want := map[string]string{
+		"name":             "fake check",
+		"host":             "example.com",
+		"type":             "tcp",
+		"port":             "8080",
+		"notifyagainevery": "0",
+		"notifywhenbackup": "false",
+		"paused":           "false",
+		"custom_message":   "message",
+	}
+
+	params := check.PostParams()
+	assert.Equal(t, want, params)
 }
 
 func TestDNSCheckPutParams(t *testing.T) {
@@ -383,6 +451,30 @@ func TestDNSCheckValid(t *testing.T) {
 
 	badNameServerCheck := DNSCheck{Name: "fake check", Hostname: "example.com", ExpectedIP: "192.168.0.1"}
 	assert.Error(t, badNameServerCheck.Valid())
+}
+
+func TestDNSCheckCustomMessage(t *testing.T) {
+	check := DNSCheck{
+		Name:          "fake check",
+		Hostname:      "example.com",
+		ExpectedIP:    "192.168.1.1",
+		NameServer:    "8.8.8.8",
+		CustomMessage: "message",
+	}
+	want := map[string]string{
+		"name":             "fake check",
+		"host":             "example.com",
+		"expectedip":       "192.168.1.1",
+		"nameserver":       "8.8.8.8",
+		"type":             "dns",
+		"notifyagainevery": "0",
+		"notifywhenbackup": "false",
+		"paused":           "false",
+		"custom_message":   "message",
+	}
+
+	params := check.PostParams()
+	assert.Equal(t, want, params)
 }
 
 func TestValidCommonParameters(t *testing.T) {
